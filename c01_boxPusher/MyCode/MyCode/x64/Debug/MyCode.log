@@ -1,0 +1,4 @@
+﻿  MyCode.cpp
+D:\SegaPractice\SEGA_Practice\c01_boxPusher\MyCode\MyCode\MyCode.cpp(135,19): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
+D:\SegaPractice\SEGA_Practice\c01_boxPusher\MyCode\MyCode\MyCode.cpp(97): warning C4715: “MyGame::IsMovable”: 不是所有的控件路径都返回值
+  MyCode.vcxproj -> D:\SegaPractice\SEGA_Practice\c01_boxPusher\MyCode\x64\Debug\MyCode.exe
