@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 using namespace std;
 
 // 常量定义
@@ -8,8 +9,8 @@ const char gStageData[] = "\
 # oo . #\n\
 #      #\n\
 ########";
-const int gStageWidth = 8;
-const int gStageHeight = 5;
+int gStageWidth = 0;
+int gStageHeight = 0;
 
 // 枚举类型
 enum Object {
@@ -25,6 +26,8 @@ enum Object {
 };
 
 // 函数声明
+char* ReadFile(string filepath);
+void GetDimension(const char* content, int& width, int& height);
 void Initialize(Object* state, int w, int h, const char* stageData);
 void Draw(const Object* state, int w, int h);
 void Update(Object* state, char input, int w, int h);
@@ -32,10 +35,14 @@ bool CheckClear(const Object* state, int w, int h);
 
 int main()
 {
+    // 读取配置文件
+    char* content = ReadFile("input.txt");
+    GetDimension(content, gStageWidth, gStageHeight);
     // 创建状态数组
     Object* state = new Object[gStageWidth * gStageHeight];
     // 初始化场景
-    Initialize(state, gStageWidth, gStageHeight, gStageData);
+    //Initialize(state, gStageWidth, gStageHeight, gStageData);
+    Initialize(state, gStageWidth, gStageHeight, content);
     // 主循环
     while (true)
     {
@@ -62,6 +69,51 @@ int main()
 }
 
 // 函数实现
+char* ReadFile(string filepath)
+{
+    ifstream fs(filepath, ifstream::binary);
+    int fsize = 0;
+    char* arr;
+    
+    fs.seekg(0, ifstream::end);
+    fsize = static_cast<int>(fs.tellg());
+    fs.seekg(0, ifstream::beg);
+    arr = new char[fsize+1]();
+    fs.read(arr, fsize);
+    arr[fsize] = '\0';
+
+    return arr;
+}
+
+void GetDimension(const char* content, int& width, int& height)
+{
+    const char* p = content;
+    int w = 0, h = 1;
+
+    while (*p != '\0')
+    {
+        if (w == 0)
+        {
+            while (*p != '\n' && *p != '\r')
+            {
+                ++w;
+                p = p + 1;
+            }
+            ++h;
+            p = p + 1;
+        }
+        else
+        {
+            p = p + 1;
+            if (*p == '\n')
+                ++h;
+        }
+    }
+
+    width = w;
+    height = h;
+}
+
 void Initialize(Object* state, int width, int height, const char* stageData)
 {
     const char* d = stageData;
