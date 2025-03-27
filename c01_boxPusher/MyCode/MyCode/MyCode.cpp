@@ -153,7 +153,7 @@ namespace MyGame
         }
     }
 
-    void GetInput()
+    bool GetInput()
     {
         if (_kbhit())
         {
@@ -168,10 +168,12 @@ namespace MyGame
                 d = Up;
             else
                 d = InvalidDirection;
+            return true;
         }
         else
         {
             d = InvalidDirection;
+            return false;
         }
     }
 
@@ -232,13 +234,16 @@ namespace MyGame
 
 int main()
 {
+    MyGame::Update();
+    MyGame::Draw();
+
     while (true)
     {
-        MyGame::GetInput();
-        MyGame::Update();
-        MyGame::Draw();
-
-        Sleep(100);
+        if (MyGame::GetInput())
+        {
+            MyGame::Update();
+            MyGame::Draw();
+        }
     }
     return 0;
 }
