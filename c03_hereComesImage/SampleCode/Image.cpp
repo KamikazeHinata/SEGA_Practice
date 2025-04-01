@@ -41,7 +41,7 @@ void Image::Draw(
 	int srcX,
 	int srcY,
 	int width,
-	int height) const 
+	int height) const
 {
 	unsigned* vram = Framework::instance().videoMemory();
 	unsigned windowWidth = Framework::instance().width();
@@ -50,8 +50,25 @@ void Image::Draw(
 	{
 		for (int x = 0; x < width; ++x) 
 		{
+			unsigned* src = &mData[(y + srcY) * mWidth + (x + srcX)];
 			unsigned* dst = &vram[(y + dstY) * windowWidth + (x + dstX)];
-			*dst = mData[(y + srcY) * mWidth + (x + srcX)];
+			
+			// alpha blend
+			unsigned srcA = (*src & 0xff000000) >> 24;
+
+			unsigned srcR = *src & 0x00ff0000;
+			unsigned srcG = *src & 0x0000ff00;
+			unsigned srcB = *src & 0x000000ff;
+
+			unsigned dstR = *dst & 0x00ff0000;
+			unsigned dstG = *dst & 0x0000ff00;
+			unsigned dstB = *dst & 0x000000ff;
+
+			unsigned r = (srcR - dstR) * srcA / 255 + dstR;
+			unsigned g = (srcG - dstG) * srcA / 255 + dstG;
+			unsigned b = (srcB - dstB) * srcA / 255 + dstB;
+
+			*dst = (r & 0xff0000) | (g & 0x00ff00) | b;
 		}
 	}
 }

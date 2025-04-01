@@ -44,7 +44,7 @@ State::State(const char* stageData, int size) : mImage(0)
 		}
 	}
 	//图片载入
-	mImage = new Image("nimotsuKunImage.dds");
+	mImage = new Image("nimotsuKunImage2.dds");
 }
 
 State::~State() 
@@ -87,27 +87,17 @@ void State::Draw() const
 			Object o = mObjects(x, y);
 			bool goalFlag = mGoalFlags(x, y);
 			ImageID id = IMAGE_ID_SPACE;
-			if (goalFlag) 
+			// 先绘制背景（地台）
+			if (o != OBJ_WALL)
+				DrawCell(x, y, goalFlag ? IMAGE_ID_GOAL : IMAGE_ID_SPACE);
+			// 后绘制前景（人、墙、砖）
+			switch (o)
 			{
-				switch (o) 
-				{
-					case OBJ_SPACE: id = IMAGE_ID_GOAL; break;
-					case OBJ_WALL: id = IMAGE_ID_WALL; break;
-					case OBJ_BLOCK: id = IMAGE_ID_BLOCK_ON_GOAL; break;
-					case OBJ_MAN: id = IMAGE_ID_PLAYER; break;
-				}
+				case OBJ_WALL:	DrawCell(x, y, IMAGE_ID_WALL); break;
+				case OBJ_BLOCK:	DrawCell(x, y, IMAGE_ID_BLOCK); break;
+				case OBJ_MAN:	DrawCell(x, y, IMAGE_ID_PLAYER); break;
+				default:		break;
 			}
-			else 
-			{
-				switch (o) 
-				{
-					case OBJ_SPACE: id = IMAGE_ID_SPACE; break;
-					case OBJ_WALL: id = IMAGE_ID_WALL; break;
-					case OBJ_BLOCK: id = IMAGE_ID_BLOCK; break;
-					case OBJ_MAN: id = IMAGE_ID_PLAYER; break;
-				}
-			}
-			DrawCell(x, y, id);
 		}
 	}
 }
@@ -126,9 +116,9 @@ void State::Update(char input)
 	switch (input) 
 	{
 		case 'a': dx = -1; break; //向左
-		case 's': dx = 1; break; //右
+		case 'd': dx = 1; break; //右
 		case 'w': dy = -1; break; //上。Y朝下为正
-		case 'z': dy = 1; break; //下。
+		case 's': dy = 1; break; //下。
 	}
 	//使用简短的变量名。
 	int w = mWidth;
